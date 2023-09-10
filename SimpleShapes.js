@@ -2,6 +2,7 @@ var canvas;
 var gl;
 var myShaderProgramTri;
 var myShaderProgramSq;
+var myShaderProgramEl;
 
 function init() {
   var canvas = document.getElementById("gl-canvas");
@@ -31,27 +32,14 @@ function init() {
   // in GLSL to be written in HTML file
   myShaderProgramSq = initShaders(gl, "vertex-shader-sq", "fragment-shader-sq");
 
+  myShaderProgramEl = initShaders(gl, "vertex-shader-el", "fragment-shader-el");
+
   drawTriangle();
   drawSquare();
+  drawEllipse();
 }
 
 function drawTriangle() {
-  // Set up the canvas
-  var canvas = document.getElementById("gl-canvas");
-  var gl = WebGLUtils.setupWebGL(canvas);
-  if (!gl) {
-    alert("WebGL is not available");
-  }
-
-  // Set up the viewport
-  gl.viewport(0, 0, 512, 512); // x, y, width, height
-
-  // Set up the background color
-  gl.clearColor(1.0, 0.0, 0.0, 1.0); // red, green, blue, opacity (alpha)
-
-  // Force the WebGL context to clear the color buffer
-  gl.clear(gl.COLOR_BUFFER_BIT);
-
   // Enter array set up code here
   var arrayOfPoints = [];
   var p0 = vec2(0.0, 0.0);
@@ -82,30 +70,7 @@ function drawTriangle() {
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 }
 
-// 0.0 - 1st point
-// 0.0 - 2nd point
-// 1.0 - 3rd point
-// 0.0
-// 0.0
-// 1.0
-
 function drawSquare() {
-  // Set up the canvas
-  var canvas = document.getElementById("gl-canvas");
-  var gl = WebGLUtils.setupWebGL(canvas);
-  if (!gl) {
-    alert("WebGL is not available");
-  }
-
-  // Set up the viewport
-  gl.viewport(0, 0, 512, 512); // x, y, width, height
-
-  // Set up the background color
-  // gl.clearColor(1.0, 0.0, 0.0, 1.0); // red, green, blue, opacity (alpha)
-
-  // Force the WebGL context to clear the color buffer
-  // gl.clear(gl.COLOR_BUFFER_BIT);
-
   // Enter array set up code here
   var arrayOfPoints = [];
   var p0 = vec2(0.0, 0.0);
@@ -135,4 +100,54 @@ function drawSquare() {
   // Force a draw of the triangle using the
   // 'drawArrays()' call
   gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+}
+
+function drawEllipse() {
+  var arrayOfPointsForCircle = [];
+
+  // Enter array set up code here
+  // Use the parametric form of the circle equations:
+  // x = c cos(theta) + a
+  // y = d sin(theta) + b
+  var x, y;
+  var theta;
+
+  var thetastart = 0;
+  var thetaend = 2 * Math.PI;
+  var n = 256;
+  var thetastep = (thetaend - thetastart) / n;
+
+  var a = -0.5; // X-coordinate of the top-left corner
+  var b = 0.5; // Y-coordinate of the top-left corner
+
+  var c = 0.3; // Scale factor for the X-axis
+  var d = 0.2; // Scale factor for the Y-axis
+
+  var myPoint;
+
+  for (var i = 0; i < n; i++) {
+    theta = thetastart + i * thetastep;
+    x = c * Math.cos(theta) + a;
+    y = d * Math.sin(theta) + b;
+
+    myPoint = vec2(x, y);
+    arrayOfPointsForCircle.push(myPoint);
+  }
+
+  var bufferId = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    flatten(arrayOfPointsForCircle),
+    gl.STATIC_DRAW
+  );
+
+  gl.useProgram(myShaderProgramEl);
+
+  var myPosition = gl.getAttribLocation(myShaderProgramEl, "myPosition");
+  gl.vertexAttribPointer(myPosition, 2, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(myPosition);
+
+  // Enter drawArrays code here
+  gl.drawArrays(gl.TRIANGLE_FAN, 0, n);
 }

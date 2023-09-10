@@ -2,13 +2,13 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <title>2D Triangle</title>
+    <title>Assignment 1</title>
 
-    <script type="text/javascript" src="../Common/webgl-utils.js"></script>
-    <script type="text/javascript" src="../Common/initShaders.js"></script>
+    <script type="text/javascript" src="Common/webgl-utils.js"></script>
+    <script type="text/javascript" src="Common/initShaders.js"></script>
     <!-- MV.js is a library of functions for 3D vector and matrix operations. -->
-    <script type="text/javascript" src="../Common/MV.js"></script>
-    <script type="text/javascript" src="SimpleTriangle.js"></script>
+    <script type="text/javascript" src="Common/MV.js"></script>
+    <script type="text/javascript" src="SimpleShapes.js"></script>
 
     <script id="vertex-shader-tri" type="x-shader/x-vertex">
 
@@ -43,9 +43,26 @@
           gl_FragColor = vec4( 1.0, 0.0, 1.0, 1.0 );
       }
     </script>
+
+    <script id="vertex-shader-el" type="x-shader/x-vertex">
+
+      attribute vec4 myPosition;
+
+      void main() {
+          gl_PointSize = 1.0;
+          gl_Position = myPosition;
+      }
+    </script>
+
+    <script id="fragment-shader-el" type="x-shader/x-fragment">
+
+      void main() {
+          gl_FragColor = vec4( 1.0, 1.0, 0.0, 1.0 );
+      }
+    </script>
   </head>
 
-  <body onload="init()">
+  <body onload="init();">
     <canvas id="gl-canvas" width="512" height="512"> </canvas>
   </body>
 </html>
