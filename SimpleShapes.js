@@ -15,7 +15,7 @@ function init() {
   gl.viewport(0, 0, 512, 512); // x, y, width, height
 
   // Set up the background color
-  gl.clearColor(1.0, 0.0, 0.0, 1.0); // red, green, blue, opacity (alpha)
+  gl.clearColor(0.0, 0.0, 0.0, 1.0); // red, green, blue, opacity (alpha)
 
   // Force the WebGL context to clear the color buffer
   gl.clear(gl.COLOR_BUFFER_BIT);
@@ -73,10 +73,10 @@ function drawTriangle() {
 function drawSquare() {
   // Enter array set up code here
   var arrayOfPoints = [];
-  var p0 = vec2(0.0, 0.0);
-  var p1 = vec2(-1.0, 0.0);
-  var p2 = vec2(-1.0, -1.0);
-  var p3 = vec2(0.0, -1.0);
+  var p0 = vec2(-0.25, -0.25);
+  var p1 = vec2(-0.75, -0.25);
+  var p2 = vec2(-0.75, -0.75);
+  var p3 = vec2(-0.25, -0.75);
   var arrayOfPoints = [p0, p1, p2, p3];
 
   // or arrayOfPoints = [0.0,0.0,1.0,0.0,0.0,1.0]
@@ -99,7 +99,7 @@ function drawSquare() {
 
   // Force a draw of the triangle using the
   // 'drawArrays()' call
-  gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+  gl.drawArrays(gl.LINE_LOOP, 0, 4);
 }
 
 function drawEllipse() {
