@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <title>Assignment 1</title>
+
+    <script type="text/javascript" src="Common/webgl-utils.js"></script>
+    <script type="text/javascript" src="Common/initShaders.js"></script>
+    <script type="text/javascript" src="Common/MV.js"></script>
+    <script type="text/javascript" src="Lab1.js"></script>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+      uniform vec2 scaleOnPosition;
+      attribute vec4 myPosition;
+
+      void main() {
+
+          gl_PointSize = 1.0;
+          gl_Position.x = myPosition.x * scaleOnPosition.x;
+          gl_Position.y = myPosition.y * scaleOnPosition.y;
+          gl_Position.z = 0.0;
+          gl_Position.w = 1.0;
+
+      }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+      precision mediump float;
+      uniform vec4 shapeColor;
+
+      void main() {
+        gl_FragColor = shapeColor;
+      }
+    </script>
+  </head>
+
+  <body onload="init();">
+    <canvas id="gl-canvas" width="512" height="512"> </canvas>
+  </body>
+</html>
+
+<!--   -->
