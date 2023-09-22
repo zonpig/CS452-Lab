@@ -11,13 +11,15 @@
     <script type="x-shader/x-vertex" id="vertex-shader-square">
       attribute vec4 myPosition;
       uniform float theta;
+      uniform vec2 mousePosition;
+
       void main() {
 
           float xi = myPosition.x;
           float yi = myPosition.y;
 
-          float xf =  xi * cos( theta ) + yi * sin( theta );
-          float yf = -xi * sin( theta ) + yi * cos( theta );
+          float xf =  xi * cos( theta ) + yi * sin( theta ) + mousePosition.x;
+          float yf = -xi * sin( theta ) + yi * cos( theta ) + mousePosition.y;
 
           gl_Position.x = xf;
           gl_Position.y = yf;
@@ -30,15 +32,22 @@
 
     <script type="x-shader/x-fragment" id="fragment-shader-square">
       void main() {
-          gl_FragColor = vec4( 0.0, 1.0, .0, 1.0 );
+          gl_FragColor = vec4( 1.0, 1.0, 0.0, 1.0 );
       }
     </script>
   </head>
 
-  <body onload="init()">
-    <canvas width="512" height="512" id="gl-canvas"></canvas>
-    <button id="stopStartButton" onclick="stopStartAnim()">
-      Stop/Start Anim
-    </button>
+  <body onload="init()" onkeydown="moveShapeKeys(event)">
+    <canvas
+      width="512"
+      height="512"
+      id="gl-canvas"
+      onclick="moveShape(event);"
+    ></canvas>
+    <br />
+    <button id="DecreaseSpeed" onclick="decreaseSpeed()">Decrease</button>
+    <button id="IncreaseSpeed" onclick="increaseSpeed()">Increase</button>
+    <button id="StartButton" onclick="startRotate()">StartRotate</button>
+    <button id="StopButton" onclick="stopRotate()">StopRotate</button>
   </body>
 </html>
