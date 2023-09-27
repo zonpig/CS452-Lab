@@ -2,7 +2,7 @@
 
 Done by:
 
-Mustapha Jom -
+Mustapha Jom - Made the shape jump using mouse clicks. Did rotate and stop rotate.
 Bryan Lim -
 
 The program draws three shapes: A triangle, a hexagon, and an ellipse. The triangle is drawn with gl.LINE_LOOP, the
