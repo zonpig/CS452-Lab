@@ -2,10 +2,10 @@ var gl;
 var shaderProgramSquare;
 var thetaUniform;
 var thetaValue;
-var stopStartFlag;
-var x;
-var y;
-var speed;
+var rotateFlag;
+var stepX;
+var stepY;
+var stepScale;
 var direction;
 
 function init() {
@@ -29,21 +29,21 @@ function init() {
   );
   gl.useProgram(shaderProgramSquare);
 
-  speed = 0.1; // Adjust the animation speed as needed
+  stepScale = 0.3; // Adjust the animation speed as needed
 
   thetaValue = 0.0;
   thetaUniform = gl.getUniformLocation(shaderProgramSquare, "theta");
   gl.uniform1f(thetaUniform, thetaValue);
 
-  x = 0.0;
-  y = 0.0;
+  stepX = 0.0;
+  stepY = 0.0;
   mousePositionUniform = gl.getUniformLocation(
     shaderProgramSquare,
     "mousePosition"
   );
-  gl.uniform2f(mousePositionUniform, x, y);
+  gl.uniform2f(mousePositionUniform, stepX, stepY);
 
-  stopStartFlag = 0;
+  rotateFlag = 0;
   direction = "Right";
 
   // Force the WebGL context to clear the color buffer
@@ -58,10 +58,10 @@ function init() {
 
 function setupSquare() {
   // Enter array set up code here
-  var p0 = vec2(0.2, 0.2);
-  var p1 = vec2(-0.2, 0.2);
-  var p2 = vec2(-0.2, -0.2);
-  var p3 = vec2(0.2, -0.2);
+  var p0 = vec2(0.1, 0.1);
+  var p1 = vec2(-0.1, 0.1);
+  var p2 = vec2(-0.1, -0.1);
+  var p3 = vec2(0.1, -0.1);
   var arrayOfPoints = [p0, p1, p2, p3];
 
   // Create a buffer on the graphics card,
@@ -82,29 +82,36 @@ function setupSquare() {
 }
 
 function startRotate() {
-  stopStartFlag = 1;
+  rotateFlag = 1;
 }
 
 function stopRotate() {
-  stopStartFlag = 0;
+  rotateFlag = 0;
 }
 
 function increaseSpeed() {
-  speed += 0.5;
+  if (stepScale >= 0.0) {
+    stepScale += 0.5;
+  }
 }
 
 function decreaseSpeed() {
-  speed -= 0.5;
+  if (stepScale > 0.0) {
+    stepScale -= 0.5;
+  }
+  if (stepScale < 0.0) {
+    stepScale = 0.0;
+  }
 }
 
 function moveShape(event) {
-  x = (event.clientX / 512.0) * 2.0 - 1.0;
-  y = -((event.clientY / 512.0) * 2.0 - 1.0);
+  stepX = (event.clientX / 512.0) * 2.0 - 1.0;
+  stepY = -((event.clientY / 512.0) * 2.0 - 1.0);
   mousePositionUniform = gl.getUniformLocation(
     shaderProgramSquare,
     "mousePosition"
   );
-  gl.uniform2f(mousePositionUniform, x, y);
+  gl.uniform2f(mousePositionUniform, stepX, stepY);
 }
 
 function moveShapeKeys(event) {
@@ -119,33 +126,33 @@ function moveShapeKeys(event) {
   } else if (theKeyCode == 87) {
     direction = "Up";
   }
-  gl.uniform2f(mousePositionUniform, x, y);
+  gl.uniform2f(mousePositionUniform, stepX, stepY);
 }
 
 function render() {
   gl.clear(gl.COLOR_BUFFER_BIT);
 
-  thetaValue += 0.01 * stopStartFlag;
+  thetaValue += 0.1 * rotateFlag;
   gl.uniform1f(thetaUniform, thetaValue);
 
   switch (direction) {
     case "Up":
-      y = y + 0.005 * speed;
+      stepY = stepY + 0.005 * stepScale;
       break;
 
     case "Left":
-      x = x - 0.005 * speed;
+      stepX = stepX - 0.005 * stepScale;
       break;
 
     case "Down":
-      y = y - 0.005 * speed;
+      stepY = stepY - 0.005 * stepScale;
       break;
 
     case "Right":
-      x = x + 0.005 * speed;
+      stepX = stepX + 0.005 * stepScale;
       break;
   }
-  gl.uniform2f(mousePositionUniform, x, y);
+  gl.uniform2f(mousePositionUniform, stepX, stepY);
   gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
 
   requestAnimFrame(render);
