@@ -121,6 +121,17 @@ function render() {
     gl.drawElements(gl.TRIANGLES, tetrahedronIndices.length, gl.UNSIGNED_BYTE, 0);
 }
 
+// Add event listeners to detect keypresses
+document.addEventListener("keydown", function(event) {
+    if (event.key === 'x') {
+        rotateAroundX();
+    } else if (event.key === 'y') {
+        rotateAroundY();
+    } else if (event.key === 'z') {
+        rotateAroundZ();
+    }
+});
+
 function rotateAroundX(){
     //will implement this to rotate the shape around the x axis
     alpha = alpha + .1;
