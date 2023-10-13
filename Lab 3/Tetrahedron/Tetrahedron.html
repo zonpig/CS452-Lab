@@ -60,7 +60,7 @@
 
 
 
-        gl_Position = M_Scale * M_z * M_y * M_x * M_Translate * vertexPosition;
+        gl_Position = M_Translate* M_z * M_y * M_x * M_Scale  * vertexPosition;
         fragmentColor = vertexColor;
       }
     </script>
@@ -86,17 +86,17 @@
     <br />
     <p>Key Bindings</p>
     <ul>
-      <li>z: Rotate Around X</li>
-      <li>x: Rotate Around Y</li>
-      <li>c: Rotate Around Z</li>
-      <li>a: Scale Up on X</li>
-      <li>d: Scale Down on X</li>
-      <li>w: Scale Up on Y</li>
-      <li>s: Scale Down on Y</li>
-      <li>j: Translate Left on X</li>
-      <li>l: Translate Right on X</li>
-      <li>i: Translate Up on Y</li>
-      <li>k: Translate Down on Y</li>
+      <li>'z': Rotate Around X</li>
+      <li>'x': Rotate Around Y</li>
+      <li>'c': Rotate Around Z</li>
+      <li>'a': Scale Up on X</li>
+      <li>'d': Scale Down on X</li>
+      <li>'w': Scale Up on Y</li>
+      <li>'s': Scale Down on Y</li>
+      <li>'j': Translate Left on X</li>
+      <li>'l': Translate Right on X</li>
+      <li>'i': Translate Up on Y</li>
+      <li>'k': Translate Down on Y</li>
     </ul>
   </body>
 </html>
