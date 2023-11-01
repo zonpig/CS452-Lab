@@ -1,37 +1,210 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
+    <script id="vertex-shader" type="x-shader/x-vertex">
 
-<script id="vertex-shader" type="x-shader/x-vertex">
+        precision mediump float;
+        attribute vec4 vertexPosition;
+        attribute vec3 nv;
 
-    precision mediump float;
-    attribute vec4 vertexPosition;
-    void main() {
-        gl_PointSize = 1.0;
-        gl_Position = vertexPosition;
-        
-    }
+        // modelview, modelview inverse transpose, and projections
+        uniform mat4 M, Minvt, P_orth, P_persp;
 
-</script>
+        // flag that decides if the projection is orthographic or perspective
+        uniform float orthIsOn;
 
-<script id="fragment-shader" type="x-shader/x-fragment">
+        // 1st Light Source: Point Light Source
+        uniform vec3 p0; // position
+        uniform vec3 Ia, Id, Is; // Incident (Ambient, Diffuse, Specular)
+        varying vec3 Iapp0, Idpp0, Ispp0;
+        varying vec3 i, v, n; // Incident ray, Viewing ray, Normal
 
-    precision mediump float;
-    void main() {
-        gl_FragColor = vec4( .8, .8, .8, 1.0 );
-    }
+        // 2nd Light Source: Directional Light Source
+        uniform vec3 direction; // direction
+        uniform vec3 Ia2, Id2, Is2; // Incident Intensity (Ambient, Diffuse, Specular)
+        varying vec3 i2, v2, n2; // Incident ray, Viewing ray, Normal
 
-</script>
+        void main() {
+          gl_PointSize = 1.0;
 
-<script type="text/javascript" src="../Common/webgl-utils.js"></script>
-<script type="text/javascript" src="../Common/initShaders.js"></script>
-<script type="text/javascript" src="../Common/MV.js"></script>
-<script type="text/javascript" src="lab4.js"></script>
-<script type="text/javascript" src="object.js"></script>
-</head>
+          // transform the vertex by modelview matrix
+          vec4 vpTransf4 = M * vec4( vertexPosition.x, vertexPosition.y, vertexPosition.z, 1.0 );
+          vec3 vpTransf = vpTransf4.xyz;
 
-<body onload = "initGL()">
-    <canvas id="gl-canvas" height="512" width="512">
-    </canvas>
-</body>
+          // transform the normal by inverse transpose of modelview matrix
+          vec4 nvTransf4 = Minvt * vec4( nv.x, nv.y, nv.z, 1.0 );
+          vec3 nvTransf = nvTransf4.xyz;
+
+          // 1st Light Source (Point Light) - compute the amount of light
+          float a = 0.0;
+          float b = 0.0;
+          float c = 0.0002;
+
+          float distance = length( vpTransf - p0 );
+          float scalefactor = a + b * distance + c * distance * distance;
+
+          Iapp0 = Ia / scalefactor;
+          Idpp0 = Id / scalefactor;
+          Ispp0 = Is / scalefactor;
+
+          i = normalize( p0 - vpTransf );
+          v = normalize( vec3( 0.0, 0.0, 0.0 ) - vpTransf );
+          n = nvTransf; // vertex normal
+
+
+          // 2nd Light Source (Directional Light) - compute the amount of light
+          i2 = direction;
+          v2 = normalize( vec3( 0.0, 0.0, 0.0 ) - vpTransf );
+          n2 = nvTransf;
+
+          if ( orthIsOn > 0.5 ) {
+              gl_Position = P_orth * M * vertexPosition;
+          } else {
+              gl_Position = P_persp * M * vertexPosition;
+          }
+      }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+      precision mediump float;
+
+      uniform float alpha;
+      uniform float alpha2;
+
+      uniform float specularOn;
+      uniform float addPointLight;
+      uniform float addDirectionalLight;
+
+      uniform vec3 ka, kd, ks;
+      varying vec3 Iapp0, Idpp0, Ispp0;
+      varying vec3 i, v, n;
+
+      uniform vec3 ka2, kd2, ks2;
+      uniform vec3 Ia2, Id2, Is2;
+      varying vec3 i2, v2, n2;
+
+      void main() {
+
+          // normalize the varying variables that should be unit vectors (i, v, n)
+          vec3 v_renorm = normalize(v);
+          vec3 n_renorm = normalize(n);
+          vec3 i_renorm = normalize(i);
+
+          vec3 v_renorm2 = normalize(v2);
+          vec3 n_renorm2 = normalize(n2);
+          vec3 i_renorm2 = normalize(i2);
+
+          ////////// 1st Light Source (Point Light) //////////
+
+          vec3 Ra, Rd, Rs;
+
+          // 1st (Point Light Source) - Ambient Reflection
+          Ra.r = ka.r * Iapp0.r;
+          Ra.g = ka.g * Iapp0.g;
+          Ra.b = ka.b * Iapp0.b;
+
+          // 1st (Point Light Source) - Diffuse Reflection
+          float costheta = dot(i_renorm, n_renorm);
+          Rd.r = kd.r * Idpp0.r * max(costheta, 0.0);
+          Rd.g = kd.r * Idpp0.g * max(costheta, 0.0);
+          Rd.b = kd.r * Idpp0.b * max(costheta, 0.0);
+
+          // 1st (Point Light Source) - Specular Reflection
+          Rs = vec3( 0.0, 0.0, 0.0 );
+          vec3 r = 2.0 * costheta * n_renorm - i_renorm;
+          float rdotv = dot(r, v_renorm);
+          float shine = max(pow(rdotv, alpha), 0.0);
+
+          if ( costheta > 0.0 ) {
+              Rs.r = ks.r * Ispp0.r * shine;
+              Rs.g = ks.g * Ispp0.g * shine;
+              Rs.b = ks.b * Ispp0.b * shine;
+          }
+
+          ////////// 2nd Light Source (Directional Light) //////////
+
+          vec3 Ra2, Rd2, Rs2;
+
+          // 2nd (Directional Light) - Ambient Reflection
+          Ra2.r = ka2.r * Ia2.r;
+          Ra2.g = ka2.g * Ia2.g;
+          Ra2.b = ka2.b * Ia2.b;
+
+          // 2nd (Directional Light) - Diffuse Reflection
+          float costheta2 = dot(i_renorm2, n_renorm2);
+          Rd2.r = kd2.r * Id2.r * max(costheta2, 0.0);
+          Rd2.g = kd2.r * Id2.g * max(costheta2, 0.0);
+          Rd2.b = kd2.r * Id2.b * max(costheta2, 0.0);
+
+          // 2nd (Directional Light) - Specular Reflection
+          Rs2 = vec3( 0.0, 0.0, 0.0 );
+          vec3 r2 = 2.0 * costheta2 * n_renorm2 - i_renorm2;
+          float rdotv2 = dot(r2, v_renorm2);
+          float shine2 = max(pow(rdotv2, alpha2), 0.0);
+
+          if ( costheta2 > 0.0 ) {
+              Rs2.r = ks2.r * Is2.r * shine2;
+              Rs2.g = ks2.g * Is2.g * shine2;
+              Rs2.b = ks2.b * Is2.b * shine2;
+          }
+
+          // Total Reflected Light
+
+          vec3 R;
+
+          if (addPointLight == 1.0 && addDirectionalLight == 1.0) {
+              if (specularOn == 1.0) {
+                  R = clamp(Ra + Rd + Rs + Ra2 + Rd2 + Rs2, 0.0, 1.0);
+              } else {
+                  R = clamp(Ra + Rd + Ra2 + Rd2, 0.0, 1.0);
+              }
+          } else if (addPointLight == 1.0 && addDirectionalLight == 0.0) {
+              if (specularOn == 1.0) {
+                  R = clamp(Ra + Rd + Rs, 0.0, 1.0);
+              } else {
+                  R = clamp(Ra + Rd, 0.0, 1.0);
+              }
+          } else if (addPointLight == 0.0 && addDirectionalLight == 1.0) {
+              if (specularOn == 1.0) {
+                  R = clamp(Ra2 + Rd2 + Rs2, 0.0, 1.0);
+              } else {
+                  R = clamp(Ra2 + Rd2, 0.0, 1.0);
+              }
+          }
+
+          gl_FragColor = vec4( R.r, R.g, R.b, 1.0 );
+      }
+    </script>
+
+    <script type="text/javascript" src="./Common/webgl-utils.js"></script>
+    <script type="text/javascript" src="./Common/initShaders.js"></script>
+    <script type="text/javascript" src="./Common/MV.js"></script>
+    <script type="text/javascript" src="lab4.js"></script>
+    <script type="text/javascript" src="object.js"></script>
+  </head>
+
+  <body onload="initGL()">
+    <canvas id="gl-canvas" height="512" width="512"> </canvas>
+    <div>
+      <button style="font-size: 1.1rem" onclick="showOrthographic()">
+        Orthographic
+      </button>
+      <button style="font-size: 1.1rem" onclick="showPerspective()">
+        Perspective
+      </button>
+    </div>
+    <div>
+      <button style="font-size: 1.1rem" onclick="pointLight()">
+        Point Light
+      </button>
+      <button style="font-size: 1.1rem" onclick="directionalLight()">
+        Directional Light
+      </button>
+    </div>
+    <div>
+      <button style="font-size: 1.1rem" onclick="includeSpecular()">
+        Specular
+      </button>
+    </div>
+  </body>
 </html>
