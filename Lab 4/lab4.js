@@ -1,6 +1,5 @@
 // Name:
 import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader";
-
 var gl;
 var numVertices;
 var numTriangles;
@@ -44,9 +43,11 @@ function initGL() {
   // vertices = getVertices(); // currently defined in object.js
   // indexList = getFaces();
 
-  readPLYFile("object.ply", function () {
+  // readGLTFFile("monkey.gltf", function () {});
+  // readOBJFile("bunny.obj", function () {});
+
+  readPLYFile("ant.ply", function () {
     // This code will be executed after the PLY file is loaded
-    console.log(vertices);
     console.log(vertices);
     var indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
@@ -86,9 +87,9 @@ function initGL() {
     gl.enableVertexAttribArray(vertexNormal);
 
     // Side View
-    //   var eye = vec3(-90.0, 35.0, -50.0); // eye
+    var eye = vec3(-90.0, 35.0, 50.0); // eye
     //Front View
-    var eye = vec3(0.0, 35.0, -90.0); // eye
+    // var eye = vec3(0.0, 35.0, 90.0); // eye
     var at = vec3(0.0, 0.0, 0.0); // at point
     var vup = vec3(0.0, 1.0, 0.0); // up vector
 
@@ -134,9 +135,9 @@ function initGL() {
       1.0,
     ];
 
-    var rightPlane = 3.0;
+    var rightPlane = 20.0;
     var leftPlane = -rightPlane;
-    var topPlane = 3.0;
+    var topPlane = 20.0;
     var bottomPlane = -topPlane;
     var nearPlane = 100.0 - 50.0;
     var farPlane = 100.0 + 50.0;
