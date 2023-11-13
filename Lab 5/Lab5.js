@@ -4,6 +4,8 @@ var alpha, beta, gamma; // Rotation angles around x, y and z axes
 var scaleX, scaleY; // Scaling factors along x and y axes
 var transX, transY; // Translation factors along x and y axes
 
+var textureImage;
+
 function init() {
   var canvas = document.getElementById("gl-canvas");
   gl = WebGLUtils.setupWebGL(canvas);
@@ -27,47 +29,129 @@ function init() {
   transY = 0;
 
   // Tetrahedron vertices
-  tetrahedronVertices = [
-    vec4(0.0, 0.5, -Math.sqrt(3) / 6, 1.0),
-    vec4(-0.5, -0.5, -Math.sqrt(3) / 6, 1.0),
-    vec4(0.5, -0.5, -Math.sqrt(3) / 6, 1.0),
-    vec4(0.0, 0.0, Math.sqrt(3) / 3, 1.0),
+  var tetrahedronVertices = [
+    0.0,0.5,-Math.sqrt(3) / 6,
+    -0.5,-0.5,-Math.sqrt(3) / 6,
+    0.5,-0.5,-Math.sqrt(3) / 6,
+
+    0.0,0.5,-Math.sqrt(3) / 6,
+    -0.5,-0.5,-Math.sqrt(3) / 6,
+    0.0,0.0,Math.sqrt(3) / 3,
+
+    -0.5,-0.5,-Math.sqrt(3) / 6,
+    0.5,-0.5,-Math.sqrt(3) / 6,
+    0.0,0.0,Math.sqrt(3) / 3,
+
+    0.5,-0.5,-Math.sqrt(3) / 6,
+    0.0,0.5,-Math.sqrt(3) / 6,
+    0.0,0.0,Math.sqrt(3) / 3,
   ];
 
-  // Tetrahedron colors
-  tetrahedronColors = [
-    vec4(1.0, 0.0, 0.0, 1.0), // Red
-    vec4(0.0, 1.0, 0.0, 1.0), // Green
-    vec4(0.0, 0.0, 1.0, 1.0), // Blue
-    vec4(1.0, 1.0, 0.0, 1.0), // Yellow
+  // Tetrahedron texture
+  var textureCoordinates = [
+    // Face 1
+    0.0, 0.0,
+    1.0, 0.0,
+    0.5, 1.0,
+  
+    // Face 2
+    0.0, 0.0,
+    1.0, 0.0,
+    0.5, 1.0,
+  
+    // Face 3
+    0.0, 0.0,
+    1.0, 0.0,
+    0.5, 1.0,
+  
+    // Face 4
+    0.0, 0.0,
+    1.0, 0.0,
+    0.5, 1.0,
   ];
+
+
 
   // Tetrahedron faces (filled triangles)
-  tetrahedronIndices = [0, 1, 2, 0, 1, 3, 1, 2, 3, 2, 0, 3];
+  var tetrahedronIndices = 
+  [0, 1, 2, 
+   3, 4, 5, 
+   6, 7, 8, 
+   9, 10, 11];
 
-  var iBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, iBuffer);
-  gl.bufferData(
-    gl.ELEMENT_ARRAY_BUFFER,
-    new Uint8Array(tetrahedronIndices),
-    gl.STATIC_DRAW
-  );
+  //  textureImage = gl.createTexture(); // for flower image
+  //  gl.bindTexture( gl.TEXTURE_2D, textureImage );
+  //  const myImage = new Image();
+  //  var url = "https://c1.staticflickr.com/9/8873/18598400202_3af67ef38f_q.jpg";
+  //  myImage.crossOrigin = "anonymous";
+   
+  //  myImage.onload = function() {
+  //      gl.bindTexture( gl.TEXTURE_2D, textureImage );
+  //      gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL, true );
+  //      gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, myImage );
+  //      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  //      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  //      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);        
+  //      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  //      //gl.generateMipmap( gl.TEXTURE_2D ); // only use this if the image is a power of 2
+  //      return textureImage;
+  //  };
+  //  myImage.src = url;
 
-  var colorBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(tetrahedronColors), gl.STATIC_DRAW);
 
-  var vertexColor = gl.getAttribLocation(myShaderProgram, "vertexColor");
-  gl.vertexAttribPointer(vertexColor, 4, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(vertexColor);
+  // var iBuffer = gl.createBuffer();
+  // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, iBuffer);
+  // gl.bufferData(
+  //   gl.ELEMENT_ARRAY_BUFFER,
+  //   new Uint16Array(tetrahedronIndices),
+  //   gl.STATIC_DRAW
+  // );
+
+  // var vertexBuffer = gl.createBuffer();
+  // gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+  // gl.bufferData(gl.ARRAY_BUFFER, flatten(tetrahedronVertices), gl.STATIC_DRAW);
+
+  // var vertexPosition = gl.getAttribLocation(myShaderProgram, "vertexPosition");
+  // gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
+  // gl.enableVertexAttribArray(vertexPosition);
+
+  // var textureVertexbuffer = gl.createBuffer();
+  // gl.bindBuffer( gl.ARRAY_BUFFER,textureVertexbuffer );
+  // gl.bufferData( gl.ARRAY_BUFFER, flatten(textureCoordinates), gl.STATIC_DRAW );
+
+  // var textureCoordinate = gl.getAttribLocation(myShaderProgram, "textureCoordinate");
+  // gl.vertexAttribPointer( textureCoordinate, 2, gl.FLOAT, false, 0, 0 );
+  // gl.enableVertexAttribArray( textureCoordinate );
+
+  var myImage = document.getElementById("textureImage");
+
+  textureImage = gl.createTexture();
+  gl.bindTexture( gl.TEXTURE_2D, textureImage );
+  gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL, true );
+  gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, myImage );
+  gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR );
+  gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST );
+  gl.generateMipmap( gl.TEXTURE_2D );
+
+  iBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,iBuffer);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(tetrahedronIndices), gl.STATIC_DRAW);
 
   var vertexBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, flatten(tetrahedronVertices), gl.STATIC_DRAW);
+  gl.bindBuffer( gl.ARRAY_BUFFER,vertexBuffer );
+  gl.bufferData( gl.ARRAY_BUFFER, flatten(tetrahedronVertices), gl.STATIC_DRAW );
 
-  var vertexPosition = gl.getAttribLocation(myShaderProgram, "vertexPosition");
-  gl.vertexAttribPointer(vertexPosition, 4, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(vertexPosition);
+  var vertexPosition = gl.getAttribLocation(myShaderProgram,"vertexPosition");
+  gl.vertexAttribPointer( vertexPosition, 3, gl.FLOAT, false, 0, 0 );
+  gl.enableVertexAttribArray( vertexPosition );
+
+  var textureVertexbuffer = gl.createBuffer();
+  gl.bindBuffer( gl.ARRAY_BUFFER,textureVertexbuffer );
+  gl.bufferData( gl.ARRAY_BUFFER, flatten(textureCoordinates), gl.STATIC_DRAW );
+
+  var textureCoordinate = gl.getAttribLocation(myShaderProgram, "textureCoordinate");
+  gl.vertexAttribPointer( textureCoordinate, 2, gl.FLOAT, false, 0, 0 );
+  gl.enableVertexAttribArray( textureCoordinate );
 
   // Set initial scale and translate uniform values to allow rendering to work
   scaleXLoc = gl.getUniformLocation(myShaderProgram, "scaleX");
@@ -84,10 +168,14 @@ function init() {
 }
 
 function render() {
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, textureImage);
+  gl.uniform1f(gl.getUniformLocation(myShaderProgram, "texMap0"), 0);
+
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   var numVertices = 12;
 
-  gl.drawElements(gl.TRIANGLES, numVertices, gl.UNSIGNED_BYTE, 0);
+  gl.drawElements(gl.TRIANGLES, numVertices, gl.UNSIGNED_SHORT, 0);
   requestAnimFrame(render);
 }
 

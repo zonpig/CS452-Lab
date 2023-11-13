@@ -1,8 +1,6 @@
-# Lab 3: 3D Transforms
+# Lab 5: Texture Mapping
 
 Done by:
-
-Mustapha Jom - Made the tetrahedron, made the tetrahedron have interpolated colors on the faces, and made the rotation functions.
 
 Bryan Lim - Implemented Scaling, Translations and composition of the various transformations.
 

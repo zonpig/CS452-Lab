@@ -2,15 +2,19 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <title>Tetrahedron</title>
+    <title>Lab 5</title>
 
     <script id="vertex-shader" type="x-shader/x-vertex">
       attribute vec4 vertexPosition;
       attribute vec4 vertexColor;
-      varying vec4 fragmentColor;
+
+      attribute vec2 textureCoordinate;
+      varying vec2 fTextureCoordinate;
+
       uniform float alpha;
       uniform float beta;
       uniform float gamma;
+
       uniform float scaleX, scaleY;
       uniform float transX, transY;
       mat4 M_x; mat4 M_y; mat4 M_z;
@@ -61,16 +65,22 @@
 
 
         gl_Position = M_Translate* M_z * M_y * M_x * M_Scale  * vertexPosition;
-        fragmentColor = vertexColor;
+        fTextureCoordinate = textureCoordinate;
       }
     </script>
 
     <script id="fragment-shader" type="x-shader/x-fragment">
       precision mediump float;
-      varying vec4 fragmentColor;
+
+      varying vec2 fTextureCoordinate;
+      uniform sampler2D texMap0;
 
       void main() {
-          gl_FragColor = fragmentColor;
+        vec4 color0 = texture2D( texMap0, fTextureCoordinate );
+        gl_FragColor.r = color0.r;
+        gl_FragColor.g = color0.g;
+        gl_FragColor.b = color0.b;
+        gl_FragColor.a = 1.0;
       }
     </script>
 
@@ -78,11 +88,12 @@
     <script type="text/javascript" src="./Common/initShaders.js"></script>
     <script type="text/javascript" src="./Common/MV.js"></script>
 
-    <script type="text/javascript" src="Lab3.js"></script>
+    <script type="text/javascript" src="Lab5.js"></script>
   </head>
 
   <body onload="init()">
     <canvas id="gl-canvas" width="512" height="512"></canvas>
+    <img id="textureImage" hidden src="texture.jpg" />
     <br />
     <p>Key Bindings</p>
     <ul>
