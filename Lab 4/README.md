@@ -1,10 +1,8 @@
 # Lab 4: Viewing and Lighting an Unknown Object
 
 Done by:  
-Bryan Lim
-
-Req6  
-Your README should discuss your implementation method. Your README should also name the object (i.e., you should provide its identity). If the object is an Eames chair, but you call it a chair because you did not know whether it is an Eames chair, a lawn chair, or a Poang chair, that is fine. But if the object is a chair, and you call it a house, you will lose points. No, the actual object is not a chair, that was just a hypothetical explanation. Your README should also discuss the process you employed to perform your ChatGPT investigation, including questions you asked, and output you received. You can share a screenshot as a separate image file, and write down the name of the screenshot in your README. Please include your name(s) in lab4.js and the README file.
+Bryan Lim  
+Mustapha Jom
 
 ## How to run
 
@@ -19,7 +17,7 @@ npx vite
 
 The object is a stone face statue/Moai.
 
-# Implementaion Description
+## Implementaion Description
 
 1. Camera  
    Look At Method (eye, at point, up vector)
@@ -63,3 +61,4 @@ After enough prompting, I managed to reach the point where I can retrieve the ve
 ## Extra Credit Object
 
 I loaded an ant object from <https://people.sc.fsu.edu/~jburkardt/data/ply/ply.html> and attached the screenshot of the ant (antPly.pngx) in the zip file.
+It can be loaded by changing lab4.js inputs in the index.html file into ant.js.

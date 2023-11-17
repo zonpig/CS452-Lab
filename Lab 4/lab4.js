@@ -1,4 +1,7 @@
 // Name:
+// Bryan Lim
+// Mustapha Jom
+
 import { PLYLoader } from "three/examples/jsm/loaders/PLYLoader";
 
 var gl;
