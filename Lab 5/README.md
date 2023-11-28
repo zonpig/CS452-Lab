@@ -2,7 +2,17 @@
 
 Done by:
 
-Bryan Lim - Implemented Scaling, Translations and composition of the various transformations.
+Bryan Lim
+Mustapha Jom
+
+## How to run
+
+To load the object, you need to run a local host server. I used http-server to run the local host server. To run the local host server, you need to install http-server and run the following commands in the terminal.
+
+```terminal commands
+npm install --global http-server
+http-server
+```
 
 ## Key Bindings
 
@@ -24,16 +34,7 @@ The Rotation (zxc) key bindings are on in one row as they only rotate in one dir
 
 ## Implementation
 
-For Lab 3, we started by using RotatingCube.js, RotatingCube.html as our basis.  
-Once we had that set up we decided to use a tetrahedron. Another consideration made was to have the various rotations, scaling and translations matrices in the vertex shader in the html file instead of the javascript file. This was done to make it easier to understand the code and implement the various transformations.
-
-## Transformation Amount
-
-I rotate, scale, and translate by 0.1f, or 5% (since the range is -1.0 to 1.0), per input. This is per keypress, or if the key is held for a short while, roughly 60 times per second.
-
-## Order of Composing Transformaiton
-
-We are composing the transformation in the below order:  
-position -> scale -> rotate X -> rotate Y -> rotate Z -> translate
-
-After experimenting and googling online (https://computergraphics.stackexchange.com/questions/4193/what-is-the-correct-order-of-transformations-scale-rotate-and-translate-and-why), we chose the above order as the order allows for the scaling to happen along the axis of the object and rotation about the center of the object.
+For Lab 5, we started by using Lab 3 as the base.  
+After that, we referenced code from textureCode.zip to implement texture mapping.
+All faces are textured.
+We use Linear Filtering for texture mapping and since the texture is a power of 2, we used Mipmapping as well.

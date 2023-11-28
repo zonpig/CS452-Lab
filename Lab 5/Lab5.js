@@ -70,58 +70,12 @@ function init() {
     0.5, 1.0,
   ];
 
-
-
   // Tetrahedron faces (filled triangles)
   var tetrahedronIndices = 
   [0, 1, 2, 
    3, 4, 5, 
    6, 7, 8, 
    9, 10, 11];
-
-  //  textureImage = gl.createTexture(); // for flower image
-  //  gl.bindTexture( gl.TEXTURE_2D, textureImage );
-  //  const myImage = new Image();
-  //  var url = "https://c1.staticflickr.com/9/8873/18598400202_3af67ef38f_q.jpg";
-  //  myImage.crossOrigin = "anonymous";
-   
-  //  myImage.onload = function() {
-  //      gl.bindTexture( gl.TEXTURE_2D, textureImage );
-  //      gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL, true );
-  //      gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, myImage );
-  //      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-  //      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  //      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);        
-  //      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  //      //gl.generateMipmap( gl.TEXTURE_2D ); // only use this if the image is a power of 2
-  //      return textureImage;
-  //  };
-  //  myImage.src = url;
-
-
-  // var iBuffer = gl.createBuffer();
-  // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, iBuffer);
-  // gl.bufferData(
-  //   gl.ELEMENT_ARRAY_BUFFER,
-  //   new Uint16Array(tetrahedronIndices),
-  //   gl.STATIC_DRAW
-  // );
-
-  // var vertexBuffer = gl.createBuffer();
-  // gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-  // gl.bufferData(gl.ARRAY_BUFFER, flatten(tetrahedronVertices), gl.STATIC_DRAW);
-
-  // var vertexPosition = gl.getAttribLocation(myShaderProgram, "vertexPosition");
-  // gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
-  // gl.enableVertexAttribArray(vertexPosition);
-
-  // var textureVertexbuffer = gl.createBuffer();
-  // gl.bindBuffer( gl.ARRAY_BUFFER,textureVertexbuffer );
-  // gl.bufferData( gl.ARRAY_BUFFER, flatten(textureCoordinates), gl.STATIC_DRAW );
-
-  // var textureCoordinate = gl.getAttribLocation(myShaderProgram, "textureCoordinate");
-  // gl.vertexAttribPointer( textureCoordinate, 2, gl.FLOAT, false, 0, 0 );
-  // gl.enableVertexAttribArray( textureCoordinate );
 
   var myImage = document.getElementById("textureImage");
 
